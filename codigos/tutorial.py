@@ -16,5 +16,3 @@ promedios = ph.groupby("fecha")["valor"].mean().reset_index() #dentro de promedi
 plt.plot(promedios["fecha"], promedios["valor"]) 
 plt.title("pH vs fecha")
 plt.show()
-
-#hola
