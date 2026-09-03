@@ -97,3 +97,22 @@ with rio.open(ruta_banda7) as src7:
     
     print("¡Banda 7 recortada con éxito!")
     print("Nueva forma (shape) de la Banda 7:", imagen_recortada_b7.shape)
+
+# CÁLCULO SEGURO DEL ÍNDICE MNDWI
+
+# 1. Extraemos las matrices y las pasamos a decimales (float32)
+verde = imagen_recortada[0].astype(np.float32)
+swir1 = imagen_recortada_b6[0].astype(np.float32)
+
+# 2. Reemplazamos los ceros de fondo por NaN (valores nulos) para evitar divisiones por cero
+verde[verde == 0] = np.nan
+swir1[swir1 == 0] = np.nan
+
+# 3. Calculamos el índice ignorando las advertencias matemáticas de división por cero
+with np.errstate(divide='ignore', invalid='ignore'):
+    mndwi = (verde - swir1) / (verde + swir1)
+
+print("¡Índice MNDWI calculado con éxito!")
+# Usamos nanmin y nanmax para que ignore los espacios vacíos y nos muestre los números reales
+print("Valor mínimo:", np.nanmin(mndwi))
+print("Valor máximo:", np.nanmax(mndwi))
