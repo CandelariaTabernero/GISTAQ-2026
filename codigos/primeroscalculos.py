@@ -116,3 +116,24 @@ print("¡Índice MNDWI calculado con éxito!")
 # Usamos nanmin y nanmax para que ignore los espacios vacíos y nos muestre los números reales
 print("Valor mínimo:", np.nanmin(mndwi))
 print("Valor máximo:", np.nanmax(mndwi))
+
+# ------------------------------------------------------------------------------
+# REPROYECCIÓN Y GUARDADO DEL VECTOR EN CRS DE LANDSAT (EPSG:32621)
+# ------------------------------------------------------------------------------
+
+# 1. Abrimos cualquier banda (por ejemplo la Banda 3) solo para extraer su CRS exacto
+ruta_banda3 = "raster/LC08_L2SP_226079_20260125_20260130_02_T1/LC08_L2SP_226079_20260125_20260130_02_T1_SR_B3.TIF"
+
+with rio.open(ruta_banda3) as src_ref:
+    crs_objetivo = src_ref.crs
+
+# 2. Reproyectamos nuestro vector original al sistema de coordenadas de Landsat
+vector_reproyectado_oficial = vector.to_crs(crs_objetivo)
+
+# 3. Definimos la ruta de salida dentro de la carpeta 'vectores'
+ruta_salida_vector = "vectores/area_de_estudio_utm.gpkg"
+
+# 4. Guardamos el nuevo vector como un archivo GeoPackage
+vector_reproyectado_oficial.to_file(ruta_salida_vector, driver="GPKG")
+
+print("¡Vector reproyectado y guardado con éxito en la carpeta vectores!")
