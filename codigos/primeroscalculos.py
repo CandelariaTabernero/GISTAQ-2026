@@ -7,11 +7,13 @@ import matplotlib.pyplot as plt
 
 #leemos el vector
 
-ruta_vector = "vectores/area_de_estudio.gpkg"
+ruta_vector = "vectores/area_de_estudio_utm.gpkg"
 vector = gpd.read_file(ruta_vector)
 
 # Imprimimos las primeras filas para ver que se cargó bien
 print(vector.head())
+print("¡Vector cargado con éxito!")
+print(vector.crs) # Te debería mostrar EPSG:32621 (o el huso UTM correspondiente)
 
 # Lectura del raster. Apuntamos a la ruta exacta de la banda verde dentro de la carpeta raster
 ruta_banda3 = "raster/LC08_L2SP_226079_20260125_20260130_02_T1/LC08_L2SP_226079_20260125_20260130_02_T1_SR_B3.TIF"
@@ -30,11 +32,8 @@ ruta_banda3 = "raster/LC08_L2SP_226079_20260125_20260130_02_T1/LC08_L2SP_226079_
 
 with rio.open(ruta_banda3) as src:
     
-    # 2. Convertimos el vector al mismo sistema de coordenadas (CRS) que la imagen
-    vector_reproyectado = vector.to_crs(src.crs)
-    
     # 3. Extraemos la geometría ya transformada
-    geometria_vector = vector_reproyectado.geometry
+    geometria_vector = vector.geometry
     
     # 4. Ahora sí, recortamos la imagen usando el molde adaptado
     imagen_recortada, transform_out = mask(src, geometria_vector, crop=True)
